@@ -35,8 +35,8 @@ DECLARE @caminho NVARCHAR(400);
 SELECT TOP (1)
     @caminho = LEFT(CAST(f.value AS NVARCHAR(400)),
                     LEN(CAST(f.value AS NVARCHAR(400)))
-                    - CHARINDEX(N'\\', REVERSE(CAST(f.value AS NVARCHAR(400)))))
-             + N'\\system_health*.xel'
+                    - CHARINDEX(N'\', REVERSE(CAST(f.value AS NVARCHAR(400)))))
+             + N'\system_health*.xel'
 FROM sys.server_event_session_fields AS f
 INNER JOIN sys.server_event_sessions AS s
         ON s.event_session_id = f.event_session_id
