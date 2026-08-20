@@ -1,0 +1,76 @@
+# ---------------------------------------------------------------------------
+# Build .NET
+# ---------------------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+[Ll]og/
+[Ll]ogs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+.vs/
+_ReSharper*/
+*.dotCover
+
+# ---------------------------------------------------------------------------
+# Segredos — NUNCA versionar
+# Se algum destes arquivos aparecer em um diff, pare o commit.
+# ---------------------------------------------------------------------------
+appsettings.*.local.json
+appsettings.Production.json
+secrets.json
+*.pfx
+*.p12
+*.key
+*.pem
+.env
+.env.*
+!.env.example
+connectionstrings.config
+web.config.local
+*.publishsettings
+*.pubxml.user
+
+# ---------------------------------------------------------------------------
+# SQL Server / SSMS / SSDT
+# ---------------------------------------------------------------------------
+*.mdf
+*.ldf
+*.ndf
+*.bak
+*.trn
+*.dtsx.user
+*.dbmdl
+*.jfm
+*.ssmssqlproj
+*.dacpac
+*.bacpac
+
+# ---------------------------------------------------------------------------
+# Ferramentas e sistema operacional
+# ---------------------------------------------------------------------------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.tmp
+*.temp
+~$*
+
+# ---------------------------------------------------------------------------
+# Saídas de diagnóstico geradas localmente
+# Podem conter texto de query e nomes de servidor reais.
+# ---------------------------------------------------------------------------
+saidas-locais/
+*.xel
+*.xem
+*.sqlplan
+*.trc
