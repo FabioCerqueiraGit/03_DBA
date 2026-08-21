@@ -103,7 +103,7 @@ infraestrutura` — e só então manda você para o script certo.
 |   `-- administracao/             Backup, restore, DBCC, permissoes, shrink
 |
 |-- dotnet/
-|   |-- httpclient/                O erro mais caro do .NET, e como nao come-lo
+|   |-- httpclient/                O erro mais caro do .NET, e como evita-lo
 |   |-- async-await/               Deadlock, sync-over-async, CancellationToken
 |   |-- excecoes/                  Tratamento, transitorio x permanente, log seguro
 |   |-- json/                      System.Text.Json e Newtonsoft.Json

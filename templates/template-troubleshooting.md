@@ -42,9 +42,9 @@ Três perguntas que economizam meia hora:
 
 ```text
 Sintoma
-├─ Evidencia A  ->  Causa provavel 1  ->  [solucao](caminho.md)
-├─ Evidencia B  ->  Causa provavel 2  ->  [solucao](caminho.md)
-└─ Nenhuma      ->  Passo seguinte
+|-- Evidencia A  ->  Causa provavel 1  ->  <caminho-do-documento>.md
+|-- Evidencia B  ->  Causa provavel 2  ->  <caminho-do-documento>.md
+`-- Nenhuma      ->  Passo seguinte
 ```
 
 ## Causas mais comuns, em ordem de frequência
