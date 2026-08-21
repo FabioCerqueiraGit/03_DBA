@@ -125,7 +125,7 @@ estatísticas de coluna criadas automaticamente (`_WA_Sys_...`) continuam como e
   no pior momento.
 - **Como reflexo, sem diagnóstico.** Se a divergência entre estimado e real é pequena, a
   estatística não é o problema.
-- **Em tabela pequena.** Diferença desprizível.
+- **Em tabela pequena.** Diferença desprezível.
 - **Se o problema real é parameter sniffing.** Atualizar estatística até ajuda (invalida o
   plano ruim), mas o problema volta na próxima compilação. Veja
   [`parameter-sniffing.md`](parameter-sniffing.md).
