@@ -191,7 +191,7 @@ No .NET moderno, o padrão já é o do sistema operacional e não costuma exigir
 
 ## Certificado de cliente (mTLS)
 
-Comúm em integrações com órgãos públicos e instituições financeiras:
+Comum em integrações com órgãos públicos e instituições financeiras:
 
 ```csharp
 var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
@@ -296,7 +296,7 @@ processar. Duas saídas:
 
 1. **Corrigir o WSDL localmente** — salvar, ajustar as referências e gerar a partir do
    arquivo.
-2. **Montar o envelope SOAP à mão** e enviar com `HttpClient`. Menos elegânte, mas
+2. **Montar o envelope SOAP à mão** e enviar com `HttpClient`. Menos elegante, mas
    funciona e é totalmente controlável:
 
 ```csharp
@@ -331,7 +331,7 @@ confusos do lado do servidor.
 - [ ] Cliente fechado com `Close()` no sucesso e `Abort()` no erro — nunca `using`.
 - [ ] Timeouts e limites de tamanho definidos explicitamente.
 - [ ] TLS 1.2+ garantido em .NET Framework.
-- [ ] Certificado carregado do repositestório do Windows por thumbprint, nunca de `.pfx` versionado.
+- [ ] Certificado carregado do repositório do Windows por thumbprint, nunca de `.pfx` versionado.
 - [ ] Conta do Application Pool com permissão na chave privada.
 - [ ] Rastreamento de mensagens desligado em produção.
 - [ ] Valores escapados ao montar XML manualmente.
