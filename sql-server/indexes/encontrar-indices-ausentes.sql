@@ -149,7 +149,7 @@ ORDER BY impacto_estimado DESC;
       Sugestoes com 15 colunas incluidas produzem indices quase do tamanho da
       tabela. Avalie se a query realmente precisa de todas essas colunas.
 
-   5. MEÇA ANTES E DEPOIS
+   5. MECA ANTES E DEPOIS
       Guarde as leituras logicas da query antes de criar o indice. Se nao
       melhorou, REMOVA o indice -- ele continuara custando escrita para sempre.
 
