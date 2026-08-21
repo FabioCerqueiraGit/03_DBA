@@ -245,7 +245,7 @@ volta sozinha após restart.
 
 ## Performance
 
-A captura de deadlock pela `system_health` tem custo desprizível e já está ligada. Uma
+A captura de deadlock pela `system_health` tem custo desprezível e já está ligada. Uma
 sessão dedicada com alvo em arquivo também tem custo baixo, porque o evento só ocorre no
 deadlock. O que custa caro é o trace flag em ERRORLOG de servidor movimentado.
 
