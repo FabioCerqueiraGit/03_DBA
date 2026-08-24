@@ -186,8 +186,7 @@ catch (DbUpdateException excecao)
     when (excecao.InnerException is SqlException { Number: 2627 or 2601 })
 {
     // Duplicata. Nao e erro: devolve o resultado do processamento original.
-    _logger.LogInformation(
-        "Mensagem ja processada. Chave={Chave}", chave);
+    _logger.LogInformation("Mensagem ja processada. Chave={Chave}", chave);
 
     return await ObterRespostaGravadaAsync(chave, ct);
 }
@@ -235,18 +234,22 @@ manual e falha do parceiro continuam existindo.
 -- Divergencias entre o que registramos e o que o parceiro confirmou.
 -- FULL OUTER JOIN pega os dois sentidos: o que falta la e o que sobra la.
 SELECT
-    COALESCE(local.Numero, parceiro.Numero)  AS numero_pedido,
-    local.Total                              AS total_local,
-    parceiro.Total                           AS total_parceiro,
-    CASE WHEN parceiro.Numero IS NULL THEN 'Ausente no parceiro'
-         WHEN local.Numero    IS NULL THEN 'Ausente aqui'
-         WHEN local.Total <> parceiro.Total THEN 'Valor divergente'
+    COALESCE(nosso.Numero, deles.Numero)     AS numero_pedido,
+    nosso.Total                              AS total_local,
+    deles.Total                              AS total_parceiro,
+    CASE WHEN deles.Numero IS NULL THEN 'Ausente no parceiro'
+         WHEN nosso.Numero IS NULL THEN 'Ausente aqui'
+         ELSE 'Valor divergente'
     END                                      AS tipo_divergencia
-FROM      dbo.Pedido            AS local
-FULL JOIN staging.PedidoParceiro AS parceiro ON parceiro.Numero = local.Numero
-WHERE local.CriadoEm >= DATEADD(DAY, -7, SYSUTCDATETIME())
-   OR parceiro.CriadoEm >= DATEADD(DAY, -7, SYSUTCDATETIME())
-HAVING COUNT(*) > 0;
+FROM            dbo.Pedido             AS nosso
+FULL OUTER JOIN staging.PedidoParceiro AS deles
+             ON deles.Numero = nosso.Numero
+WHERE (nosso.CriadoEm >= DATEADD(DAY, -7, SYSUTCDATETIME())
+    OR deles.CriadoEm >= DATEADD(DAY, -7, SYSUTCDATETIME()))
+  AND (deles.Numero IS NULL
+    OR nosso.Numero IS NULL
+    OR nosso.Total <> deles.Total)
+ORDER BY numero_pedido;
 ```
 
 Duas regras operacionais que fazem a reconciliação valer alguma coisa:
@@ -292,10 +295,10 @@ Duas regras operacionais que fazem a reconciliação valer alguma coisa:
 ## Referências
 
 - [Microsoft Learn — Transactional Outbox pattern](https://learn.microsoft.com/azure/architecture/best-practices/transactional-outbox-cosmos)
-- [Microsoft Learn — Idempotent message processing](https://learn.microsoft.com/azure/architecture/reference-architectures/containers/aks-mission-critical/mission-critical-data-platform)
 - [Microsoft Learn — Saga distributed transactions pattern](https://learn.microsoft.com/azure/architecture/reference-architectures/saga/saga)
 - [Microsoft Learn — Compensating Transaction pattern](https://learn.microsoft.com/azure/architecture/patterns/compensating-transaction)
 - [Microsoft Learn — Table hints (`READPAST`, `UPDLOCK`)](https://learn.microsoft.com/sql/t-sql/queries/hints-transact-sql-table)
+- [Microsoft Learn — EF Core: transações](https://learn.microsoft.com/ef/core/saving/transactions)
 
 ---
 
