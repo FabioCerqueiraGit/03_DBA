@@ -1,7 +1,7 @@
 # Índice por sintoma
 
-> **Estou enfrentando um problema.** Encontre pelo sintoma, como ele chega até você — não
-> pelo nome técnico da causa, que é justamente o que você ainda não sabe.
+> **Estou enfrentando um problema.** Encontre pelo sintoma, como ele chega até você — não pelo
+> nome técnico da causa, que é justamente o que você ainda não sabe.
 >
 > Navegação: **Sintoma → Diagnóstico → Solução**
 
@@ -15,34 +15,31 @@ Para navegar por tecnologia, veja [`INDICE-POR-TECNOLOGIA.md`](INDICE-POR-TECNOL
 Estou enfrentando um problema...
 │
 ├─ BANCO DE DADOS
-│   ├─ O SQL Server esta lento
-│   ├─ O banco esta bloqueado / travado
-│   ├─ Existe deadlock
-│   ├─ O transaction log esta crescendo
-│   ├─ O tempdb encheu
-│   ├─ O banco esta crescendo
-│   ├─ Uma query ficou lenta
-│   └─ O disco vai encher
+│   ├─ O SQL Server esta lento          ├─ O tempdb encheu
+│   ├─ O banco esta bloqueado           ├─ O banco esta crescendo
+│   ├─ Existe deadlock                  ├─ Uma query ficou lenta
+│   └─ O transaction log esta crescendo └─ O disco vai encher
 │
 ├─ APLICACAO
-│   ├─ A aplicacao esta lenta
-│   ├─ A aplicacao travou (CPU baixa)
-│   ├─ A memoria cresce ate reciclar
-│   ├─ Nao consigo conectar no banco
+│   ├─ A aplicacao esta lenta ou travou ├─ Nao consigo conectar no banco
+│   ├─ A memoria cresce ate reciclar    ├─ Data com um dia a mais
+│   ├─ Valor virou mil vezes maior      ├─ Acento virou caractere estranho
 │   └─ Funciona local e falha em producao
 │
 ├─ API E INTEGRACAO
-│   ├─ A API retorna timeout
-│   ├─ A API retorna erro
-│   ├─ O JSON nao desserializa
-│   ├─ A chamada SOAP falha
-│   ├─ Erro de certificado / TLS
-│   └─ Operacao foi processada em duplicidade
+│   ├─ A API retorna timeout            ├─ O JSON nao desserializa
+│   ├─ A chamada SOAP falha             ├─ O XML nao e processado
+│   ├─ Erro de certificado / TLS        ├─ Processado em duplicidade
+│   └─ Gravou aqui e nao chegou la      └─ O arquivo processou pela metade
 │
-└─ IIS E DEPLOY
-    ├─ HTTP 503
-    ├─ HTTP 500 / 502
-    └─ O deployment falhou
+├─ ASP.NET E IIS
+│   ├─ HTTP 503                         ├─ HTTP 500 / 502
+│   └─ [Authorize] nao esta protegendo  └─ O job derrubou a API
+│
+└─ SEGURANCA E DEPLOY
+    ├─ Vazei um segredo no Git          ├─ Esse sistema e injetavel?
+    ├─ As senhas estao em MD5           ├─ Preciso fazer rollback
+    └─ Commitei errado / perdi commits  └─ O deployment falhou
 ```
 
 ---
@@ -64,19 +61,20 @@ Estou enfrentando um problema...
 
 ### "Quem está bloqueando quem?" / "o banco travou"
 
-1. [`quem-esta-bloqueando-quem.sql`](sql-server/troubleshooting/quem-esta-bloqueando-quem.sql) — pares bloqueador/bloqueado, com o texto da query do bloqueador
-2. [`arvore-de-bloqueio-hierarquica.sql`](sql-server/troubleshooting/arvore-de-bloqueio-hierarquica.sql) — **a sessão RAIZ**, que é a única que importa
+1. [`quem-esta-bloqueando-quem.sql`](sql-server/troubleshooting/quem-esta-bloqueando-quem.sql) — pares bloqueador/bloqueado
+2. [`arvore-de-bloqueio-hierarquica.sql`](sql-server/troubleshooting/arvore-de-bloqueio-hierarquica.sql) — **a sessão RAIZ**, a única que importa
 3. [`encontrar-transacoes-abertas-longa-duracao.sql`](sql-server/troubleshooting/encontrar-transacoes-abertas-longa-duracao.sql) — transação esquecida
-4. Antes de matar a sessão: [`matar-sessao-com-seguranca.md`](sql-server/troubleshooting/matar-sessao-com-seguranca.md)
+4. Antes de matar: [`matar-sessao-com-seguranca.md`](sql-server/troubleshooting/matar-sessao-com-seguranca.md)
 
-**Causa mais frequente:** transação aberta e abandonada pela aplicação. Correção definitiva
-em [`ado-net-fundamentos-seguros.md`](acesso-a-dados/ado-net/ado-net-fundamentos-seguros.md)
-e [`timeout-de-comando-vs-conexao.md`](acesso-a-dados/ado-net/timeout-de-comando-vs-conexao.md).
+**Causas mais frequentes:** transação aberta e abandonada — ver
+[`ado-net-fundamentos-seguros.md`](acesso-a-dados/ado-net/ado-net-fundamentos-seguros.md) — ou
+chamada HTTP dentro de transação aberta, ver
+[`arquitetura/quando-usar-cada-padrao.md`](arquitetura/quando-usar-cada-padrao.md).
 
 ### "Erro 1205 — deadlock"
 
-1. [`extrair-deadlocks-do-system-health.sql`](sql-server/troubleshooting/extrair-deadlocks-do-system-health.sql) — os deadlocks já estão gravados
-2. [`investigar-deadlocks.md`](sql-server/troubleshooting/investigar-deadlocks.md) — ler o grafo, achar o padrão, corrigir
+1. [`extrair-deadlocks-do-system-health.sql`](sql-server/troubleshooting/extrair-deadlocks-do-system-health.sql) — já estão gravados
+2. [`investigar-deadlocks.md`](sql-server/troubleshooting/investigar-deadlocks.md) — ler o grafo e corrigir
 
 > **Erro 1222** não é deadlock, é timeout de lock → trate como bloqueio.
 
@@ -85,13 +83,13 @@ e [`timeout-de-comando-vs-conexao.md`](acesso-a-dados/ado-net/timeout-de-comando
 1. [`por-que-o-transaction-log-esta-crescendo.md`](sql-server/troubleshooting/por-que-o-transaction-log-esta-crescendo.md)
 2. [`diagnosticar-crescimento-transaction-log.sql`](sql-server/troubleshooting/diagnosticar-crescimento-transaction-log.sql)
 
-> **Não** troque o recovery model para `SIMPLE` para resolver: isso quebra a cadeia de
-> backup e elimina o restore point-in-time, em silêncio.
+> **Não** troque o recovery model para `SIMPLE` para resolver: isso quebra a cadeia de backup e
+> elimina o restore point-in-time, em silêncio.
 
 ### "O tempdb encheu"
 
-1. [`diagnosticar-tempdb.md`](sql-server/troubleshooting/diagnosticar-tempdb.md)
-2. [`analisar-uso-do-tempdb.sql`](sql-server/troubleshooting/analisar-uso-do-tempdb.sql)
+[`diagnosticar-tempdb.md`](sql-server/troubleshooting/diagnosticar-tempdb.md) →
+[`analisar-uso-do-tempdb.sql`](sql-server/troubleshooting/analisar-uso-do-tempdb.sql)
 
 | Categoria dominante | Causa | Onde corrigir |
 |---|---|---|
@@ -101,9 +99,9 @@ e [`timeout-de-comando-vs-conexao.md`](acesso-a-dados/ado-net/timeout-de-comando
 
 ### "Por que o banco está crescendo?"
 
-1. [`tamanho-das-tabelas.sql`](sql-server/espaco-e-crescimento/tamanho-das-tabelas.sql)
-2. [`tamanho-dos-indices.sql`](sql-server/espaco-e-crescimento/tamanho-dos-indices.sql)
-3. [`espaco-em-disco-e-arquivos-do-banco.sql`](sql-server/monitoramento/espaco-em-disco-e-arquivos-do-banco.sql)
+[`tamanho-das-tabelas.sql`](sql-server/espaco-e-crescimento/tamanho-das-tabelas.sql) →
+[`tamanho-dos-indices.sql`](sql-server/espaco-e-crescimento/tamanho-dos-indices.sql) →
+[`espaco-em-disco-e-arquivos-do-banco.sql`](sql-server/monitoramento/espaco-em-disco-e-arquivos-do-banco.sql)
 
 > Antes de `SHRINK`: [`shrink-quando-nao-usar.md`](sql-server/administracao/shrink-quando-nao-usar.md)
 
@@ -115,6 +113,7 @@ e [`timeout-de-comando-vs-conexao.md`](acesso-a-dados/ado-net/timeout-de-comando
 | Parameter sniffing | [`parameter-sniffing.md`](sql-server/performance/parameter-sniffing.md) |
 | Índice ausente ou removido | [`encontrar-indices-ausentes.sql`](sql-server/indexes/encontrar-indices-ausentes.sql) |
 | Predicado não SARGable | [`sargability-e-indices-ignorados.md`](sql-server/performance/sargability-e-indices-ignorados.md) |
+| Plano novo após deployment | [`estrategias-de-deployment-e-rollback.md`](devops/deployment/estrategias-de-deployment-e-rollback.md) |
 | Como ler o plano | [`como-ler-um-plano-de-execucao.md`](sql-server/performance/como-ler-um-plano-de-execucao.md) |
 
 ### "O índice existe mas o SQL Server não usa"
@@ -122,7 +121,7 @@ e [`timeout-de-comando-vs-conexao.md`](acesso-a-dados/ado-net/timeout-de-comando
 → [`sargability-e-indices-ignorados.md`](sql-server/performance/sargability-e-indices-ignorados.md)
 
 Causa muito frequente vinda da aplicação: `AddWithValue` gerando `NVARCHAR` contra coluna
-`VARCHAR` → [`ado-net-fundamentos-seguros.md`](acesso-a-dados/ado-net/ado-net-fundamentos-seguros.md).
+`VARCHAR` → [`cultura-encoding-e-comparacao-de-strings.md`](csharp/cultura-encoding-e-comparacao-de-strings.md).
 
 ---
 
@@ -139,127 +138,124 @@ Causa muito frequente vinda da aplicação: `AddWithValue` gerando `NVARCHAR` co
 | Baixa | **Crescendo** | Vazamento | [`aplicacao-lenta-ou-travando.md`](dotnet/diagnostico/aplicacao-lenta-ou-travando.md) |
 | Baixa | Estável, banco ocupado | O gargalo é o banco | [roteiro do SQL Server](sql-server/troubleshooting/sql-server-esta-lento-roteiro-de-diagnostico.md) |
 
-### "Timeout expired" ao conectar no banco
+### Erros de conexão e de tempo
 
-→ [`connection-pool-esgotado.md`](acesso-a-dados/ado-net/connection-pool-esgotado.md)
+| Sintoma | Documento |
+|---|---|
+| "Timeout expired" ao **conectar** | [`connection-pool-esgotado.md`](acesso-a-dados/ado-net/connection-pool-esgotado.md) |
+| Timeout ao **executar** o comando | [`timeout-de-comando-vs-conexao.md`](acesso-a-dados/ado-net/timeout-de-comando-vs-conexao.md) |
+| A página nunca responde, sem erro e sem CPU | [`armadilhas-async-await.md`](dotnet/async-await/armadilhas-async-await.md) |
+| "A second operation was started on this context instance" | [`tempos-de-vida-e-dependencia-cativa.md`](dotnet/dependency-injection/tempos-de-vida-e-dependencia-cativa.md) |
+| `ObjectDisposedException` em `DbContext` | [`tempos-de-vida-e-dependencia-cativa.md`](dotnet/dependency-injection/tempos-de-vida-e-dependencia-cativa.md) |
 
-A mensagem culpa o banco; a causa quase sempre é conexão sem `Dispose` na aplicação.
-Confirme do lado do banco com
-[`sessoes-e-requests-em-execucao.sql`](sql-server/monitoramento/sessoes-e-requests-em-execucao.sql).
+### Dado errado sem nenhum erro
 
-### "Timeout ao executar o comando"
+Esta categoria é a mais perigosa: não há exceção, só dado incorreto.
 
-→ [`timeout-de-comando-vs-conexao.md`](acesso-a-dados/ado-net/timeout-de-comando-vs-conexao.md)
-
-Sempre por volta de 30 segundos? É o `CommandTimeout` no padrão. Antes de aumentá-lo,
-verifique se não é bloqueio.
-
-### "A página nunca responde" (sem erro, sem CPU)
-
-→ [`armadilhas-async-await.md`](dotnet/async-await/armadilhas-async-await.md)
-
-Deadlock por `.Result`/`.Wait()` em ASP.NET clássico, WinForms ou WPF.
+| Sintoma | Causa provável | Documento |
+|---|---|---|
+| Data com um dia a mais ou a menos | `DateTime` convertido para UTC | [`datas-e-fuso-horario.md`](csharp/datas-e-fuso-horario.md) |
+| Horário com 3 horas de diferença | Servidor em UTC, `DateTime.Now` no código | [`datas-e-fuso-horario.md`](csharp/datas-e-fuso-horario.md) |
+| Registro das 23:59:59 sumiu do fechamento | `DATETIME` arredondando, ou `BETWEEN` | [`datas-e-fuso-horario.md`](csharp/datas-e-fuso-horario.md) |
+| Valor virou mil vezes maior | Cultura na conversão de decimal | [`cultura-encoding-e-comparacao-de-strings.md`](csharp/cultura-encoding-e-comparacao-de-strings.md) |
+| `José` virou `Jos�` ou `JosÃ©` | Encoding do arquivo | [`cultura-encoding-e-comparacao-de-strings.md`](csharp/cultura-encoding-e-comparacao-de-strings.md) |
+| A busca não acha o registro que existe | Collation ou acento | [`cultura-encoding-e-comparacao-de-strings.md`](csharp/cultura-encoding-e-comparacao-de-strings.md) |
+| `TimeZoneNotFoundException` em contêiner | `tzdata` ausente na imagem | [`datas-e-fuso-horario.md`](csharp/datas-e-fuso-horario.md) |
 
 ### "Funciona local e falha em produção"
 
 | Suspeita | Onde ler |
 |---|---|
-| TLS 1.2 não habilitado | [`legado-consumindo-api-rest-moderna.md`](sistemas-legados/legado-consumindo-api-rest-moderna.md) |
-| Permissão na chave privada do certificado | [`consumir-soap-de-sistema-legado.md`](api-integracao/soap-wcf/consumir-soap-de-sistema-legado.md) |
+| TLS 1.2 não habilitado | [`tls-e-certificados-em-dotnet.md`](seguranca/certificados/tls-e-certificados-em-dotnet.md) |
+| Permissão na chave privada do certificado | [`tls-e-certificados-em-dotnet.md`](seguranca/certificados/tls-e-certificados-em-dotnet.md) |
 | Identidade do Application Pool sem permissão | [`http-503-service-unavailable.md`](iis/troubleshooting/http-503-service-unavailable.md) |
-| Configuração de ambiente diferente | [`http-500-e-http-502.md`](iis/troubleshooting/http-500-e-http-502.md) |
+| Cultura ou fuso diferentes no servidor | [`csharp/README.md`](csharp/README.md) |
+| Segredo não provisionado no ambiente | [`gerenciamento-de-segredos-em-aplicacoes-dotnet.md`](seguranca/secrets/gerenciamento-de-segredos-em-aplicacoes-dotnet.md) |
 | Volume de dados muito maior | [roteiro do SQL Server](sql-server/troubleshooting/sql-server-esta-lento-roteiro-de-diagnostico.md) |
 
 ---
 
 ## API e integração
 
-### "A API retorna timeout"
-
-→ [`timeout-e-cancellation.md`](dotnet/httpclient/timeout-e-cancellation.md)
-
-São quatro timeouts na cadeia. A mensagem raramente diz qual estourou — o documento tem a
-tabela para identificar.
-
-### "A API funciona em teste e falha sob carga"
-
-→ [`httpclient-uso-correto.md`](dotnet/httpclient/httpclient-uso-correto.md)
-
-Esgotamento de portas por `HttpClient` criado em laço. Confirme com
-`netstat -an | find /c "TIME_WAIT"` no servidor.
-
-### "A integração falha de vez em quando"
-
-→ [`resiliencia-retry-circuit-breaker.md`](dotnet/httpclient/resiliencia-retry-circuit-breaker.md)
-
-### "O pedido foi processado em duplicidade"
-
-→ [`retry-seguro-e-idempotencia.md`](api-integracao/resiliencia/retry-seguro-e-idempotencia.md)
-
-Causa clássica: retry após timeout em operação não idempotente.
-
-### "O JSON não desserializa"
-
-→ [`serializacao-json.md`](dotnet/json/serializacao-json.md)
-
-| Sintoma | Causa |
+| Sintoma | Documento |
 |---|---|
-| Objeto com propriedades zeradas, **sem erro** | `PropertyNameCaseInsensitive` desligado |
-| Data com horas de diferença | `DateTime.Kind` inadequado |
-| Número rejeitado | Valor veio como string, ou cultura com vírgula |
+| A API retorna timeout | [`timeout-e-cancellation.md`](dotnet/httpclient/timeout-e-cancellation.md) |
+| Funciona em teste e falha sob carga | [`httpclient-uso-correto.md`](dotnet/httpclient/httpclient-uso-correto.md) |
+| A integração falha de vez em quando | [`resiliencia-retry-circuit-breaker.md`](dotnet/httpclient/resiliencia-retry-circuit-breaker.md) |
+| O pedido foi processado em duplicidade | [`retry-seguro-e-idempotencia.md`](api-integracao/resiliencia/retry-seguro-e-idempotencia.md) |
+| **Gravou aqui e não chegou lá** | [`consistencia-entre-sistemas-outbox-e-reconciliacao.md`](arquitetura/integracao/consistencia-entre-sistemas-outbox-e-reconciliacao.md) |
+| O JSON não desserializa | [`serializacao-json.md`](dotnet/json/serializacao-json.md) |
+| O XML não é processado | [`processar-xml-com-seguranca.md`](api-integracao/xml/processar-xml-com-seguranca.md) |
+| A chamada SOAP falha | [`consumir-soap-de-sistema-legado.md`](api-integracao/soap-wcf/consumir-soap-de-sistema-legado.md) |
+| "Could not create SSL/TLS secure channel" | [`tls-e-certificados-em-dotnet.md`](seguranca/certificados/tls-e-certificados-em-dotnet.md) |
+| HTTP 401 / 403 na integração | [`autenticacao-em-apis.md`](api-integracao/autenticacao/autenticacao-em-apis.md) |
+| O arquivo foi processado pela metade, ou duas vezes | [`integracao-por-arquivo-csv-e-posicional.md`](api-integracao/arquivos/integracao-por-arquivo-csv-e-posicional.md) |
 
-### "A chamada SOAP falha"
-
-→ [`consumir-soap-de-sistema-legado.md`](api-integracao/soap-wcf/consumir-soap-de-sistema-legado.md)
-
-### "Could not create SSL/TLS secure channel"
-
-→ [`legado-consumindo-api-rest-moderna.md`](sistemas-legados/legado-consumindo-api-rest-moderna.md)
-
-TLS 1.2 não habilitado em .NET Framework. Uma linha resolve.
-
-### "HTTP 401 / 403 na integração"
-
-→ [`autenticacao-em-apis.md`](api-integracao/autenticacao/autenticacao-em-apis.md)
+> **Sobre erro de certificado:** a correção que aparece primeiro no buscador —
+> `ServerCertificateValidationCallback = ... => true` — não conserta nada e desliga a autenticação
+> do TLS. O caminho para achar a causa real está no documento acima.
 
 ---
 
-## IIS e deploy
+## ASP.NET e IIS
 
-### "HTTP 503 Service Unavailable"
+| Sintoma | Documento |
+|---|---|
+| HTTP 503 Service Unavailable | [`http-503-service-unavailable.md`](iis/troubleshooting/http-503-service-unavailable.md) |
+| HTTP 500.x ou HTTP 502.5 | [`http-500-e-http-502.md`](iis/troubleshooting/http-500-e-http-502.md) |
+| `[Authorize]` não está protegendo o endpoint | [`ordem-do-pipeline-de-middleware.md`](aspnet/aspnet-core/ordem-do-pipeline-de-middleware.md) |
+| CORS configurado e mesmo assim bloqueado | [`ordem-do-pipeline-de-middleware.md`](aspnet/aspnet-core/ordem-do-pipeline-de-middleware.md) |
+| Arquivo protegido acessível sem login | [`ordem-do-pipeline-de-middleware.md`](aspnet/aspnet-core/ordem-do-pipeline-de-middleware.md) |
+| Endpoint migrado passou a receber `null` | [`mapa-de-versoes-e-equivalencias.md`](aspnet/mapa-de-versoes-e-equivalencias.md) |
+| `HttpContext.Current` não existe mais | [`mapa-de-versoes-e-equivalencias.md`](aspnet/mapa-de-versoes-e-equivalencias.md) |
+| Um job derrubou a API inteira | [`servico-em-segundo-plano-sem-derrubar-a-aplicacao.md`](dotnet/background-services/servico-em-segundo-plano-sem-derrubar-a-aplicacao.md) |
+| Após escalar, tudo processa em duplicidade | [`servico-em-segundo-plano-sem-derrubar-a-aplicacao.md`](dotnet/background-services/servico-em-segundo-plano-sem-derrubar-a-aplicacao.md) |
 
-→ [`http-503-service-unavailable.md`](iis/troubleshooting/http-503-service-unavailable.md)
+**⚠️ `[Authorize]` que não protege é falha de segurança silenciosa** — não gera erro nem log.
+`UseAuthorization()` registrado antes de `UseAuthentication()`, ou ambos antes de `UseRouting()`.
 
-O Application Pool está parado. O evento WAS no log **Sistema** diz por quê — e o motivo
-mais comum é senha da identidade expirada.
+---
 
-### "HTTP 500.x" ou "HTTP 502.5"
+## Segurança
 
-→ [`http-500-e-http-502.md`](iis/troubleshooting/http-500-e-http-502.md)
+| Sintoma / pergunta | Documento |
+|---|---|
+| **Vazei uma senha ou token em um commit** | [`remover-segredo-vazado-do-historico.md`](devops/git/remover-segredo-vazado-do-historico.md) |
+| "Esse sistema é injetável? Como eu descubro?" | [`prevenir-e-encontrar-sql-injection.md`](seguranca/sql-injection/prevenir-e-encontrar-sql-injection.md) |
+| As senhas dos usuários estão em MD5 | [`armazenamento-seguro-de-senhas.md`](seguranca/senhas/armazenamento-seguro-de-senhas.md) |
+| Onde a connection string deveria estar? | [`gerenciamento-de-segredos-em-aplicacoes-dotnet.md`](seguranca/secrets/gerenciamento-de-segredos-em-aplicacoes-dotnet.md) |
+| Erro de certificado após migrar de driver | [`tls-e-certificados-em-dotnet.md`](seguranca/certificados/tls-e-certificados-em-dotnet.md) |
+| Quem pode o quê no banco? | [`permissoes-e-menor-privilegio.md`](sql-server/administracao/permissoes-e-menor-privilegio.md) |
 
-**Anote o subcódigo.** `500.19` é configuração; `500.30` é falha de inicialização.
+> **A primeira ação diante de um segredo vazado não é técnica — é rotacionar a credencial.**
+> Limpar o histórico do Git é higiene, não remediação.
 
-### "O deployment falhou"
+---
 
-→ [`checklist-deployment-aplicacao-dotnet.md`](checklists/checklist-deployment-aplicacao-dotnet.md)
+## Git, CI e deploy
+
+| Sintoma | Documento |
+|---|---|
+| Commitei no branch errado | [`comandos-git-de-emergencia.md`](devops/git/comandos-git-de-emergencia.md) |
+| Rodei `reset --hard` e perdi commits | [`comandos-git-de-emergencia.md`](devops/git/comandos-git-de-emergencia.md) |
+| Preciso desfazer um commit já enviado | [`comandos-git-de-emergencia.md`](devops/git/comandos-git-de-emergencia.md) |
+| "Quando isso quebrou?" | [`comandos-git-de-emergencia.md`](devops/git/comandos-git-de-emergencia.md) |
+| O pipeline passa mas nenhum teste roda | [`pipeline-ci-dotnet.md`](devops/github-actions/pipeline-ci-dotnet.md) |
+| **Preciso fazer rollback** | [`estrategias-de-deployment-e-rollback.md`](devops/deployment/estrategias-de-deployment-e-rollback.md) |
+| A migração de banco não pode voltar | [`estrategias-de-deployment-e-rollback.md`](devops/deployment/estrategias-de-deployment-e-rollback.md) |
+| O deployment falhou | [`checklist-deployment-aplicacao-dotnet.md`](checklists/checklist-deployment-aplicacao-dotnet.md) |
 
 ---
 
 ## Sistemas legados
 
-### "Sistema legado precisa consumir uma API REST moderna"
-
-→ [`legado-consumindo-api-rest-moderna.md`](sistemas-legados/legado-consumindo-api-rest-moderna.md)
-
-### "Precisamos modernizar sem parar o sistema"
-
-→ [`modernizacao-incremental-strangler.md`](sistemas-legados/modernizacao-incremental-strangler.md)
-
-### "O EF6 está gerando centenas de queries"
-
-→ [`ef6-troubleshooting.md`](acesso-a-dados/entity-framework-6/ef6-troubleshooting.md)
-
-Lazy loading vem **ligado por padrão** no EF6.
+| Sintoma | Documento |
+|---|---|
+| Sistema legado precisa consumir uma API REST moderna | [`legado-consumindo-api-rest-moderna.md`](sistemas-legados/legado-consumindo-api-rest-moderna.md) |
+| Precisamos modernizar sem parar o sistema | [`modernizacao-incremental-strangler.md`](sistemas-legados/modernizacao-incremental-strangler.md) |
+| "Como eu faço isso no Core, se no MVC 5 era assim?" | [`mapa-de-versoes-e-equivalencias.md`](aspnet/mapa-de-versoes-e-equivalencias.md) |
+| O EF6 está gerando centenas de queries | [`ef6-troubleshooting.md`](acesso-a-dados/entity-framework-6/ef6-troubleshooting.md) |
+| Código sem teste que precisa mudar | [`sistemas-legados/`](sistemas-legados/) |
 
 ---
 
@@ -267,10 +263,9 @@ Lazy loading vem **ligado por padrão** no EF6.
 
 > **Salve a evidência antes de mitigar.**
 
-A cadeia de bloqueio, a transação aberta, o estado das threads e o conteúdo da memória
-desaparecem no instante em que você mata a sessão ou reinicia o processo. Sem a evidência
-salva, a reunião de pós-incidente termina em "reiniciamos e melhorou" — o que garante a
-reincidência.
+A cadeia de bloqueio, a transação aberta, o estado das threads e o conteúdo da memória desaparecem
+no instante em que você mata a sessão ou reinicia o processo. Sem a evidência salva, a reunião de
+pós-incidente termina em "reiniciamos e melhorou" — o que garante a reincidência.
 
 ---
 
