@@ -13,8 +13,8 @@
 
 ## Problema
 
-Alguém commitou `Password=P@ssw0rdReal` em um `appsettings.json`, ou uma `.pfx`, ou um token de
-API. O commit foi enviado. O reflexo natural é apagar o arquivo e commitar de novo.
+Alguém commitou um `Password=` com valor real em um `appsettings.json`, ou uma `.pfx`, ou um token
+de API. O commit foi enviado. O reflexo natural é apagar o arquivo e commitar de novo.
 
 **Isso não resolve nada.** O valor continua no histórico, acessível por:
 
@@ -104,20 +104,21 @@ Crie um arquivo de substituições (fora do repositório, para não commitá-lo 
 
 ```text
 # ../substituicoes.txt
-P@ssw0rdReal==><SENHA>
-ghp_umTokenQueVazouAqui==><TOKEN>
+<VALOR-DA-SENHA-QUE-VAZOU>==><SENHA>
+<VALOR-DO-TOKEN-QUE-VAZOU>==><TOKEN>
 regex:Password=[^;"]+==>Password=<SENHA>
 ```
 
-O separador é `==>`. Cada linha é `valor-original==>substituto`. O prefixo `regex:` habilita
-expressão regular.
+O separador é `==>`. Cada linha é `valor-original==>substituto`; o valor original é o texto real
+que vazou, digitado literalmente. O prefixo `regex:` habilita expressão regular — útil quando o
+mesmo segredo aparece em variações.
 
 ```bash
 git filter-repo --replace-text ../substituicoes.txt
 ```
 
-> Não deixe o arquivo de substituições no repositório. Ele é, por construção, uma lista de
-> segredos reais.
+> **Não deixe o arquivo de substituições no repositório, e apague-o ao terminar.** Ele é, por
+> construção, uma lista de segredos reais em texto claro.
 
 ### Passo 4 — Envie o histórico reescrito
 
@@ -216,7 +217,8 @@ dotnet user-secrets set "ConnectionStrings:Principal" "Server=<SERVIDOR>;Databas
 
 - **Produção, em qualquer plataforma:** variáveis de ambiente, Azure Key Vault, AWS Secrets
   Manager ou o cofre da sua organização. E, quando o destino for SQL Server em ambiente com
-  Active Directory, **autenticação integrada elimina a senha do problema**.
+  Active Directory, **autenticação integrada elimina a senha do problema**. Detalhes em
+  [`../../seguranca/secrets/`](../../seguranca/secrets/gerenciamento-de-segredos-em-aplicacoes-dotnet.md).
 
 ### 3. Push protection do GitHub
 
@@ -250,6 +252,7 @@ novos. Ele é conveniência. O controle é a push protection do lado do servidor
 - [ ] Logs de acesso verificados no período entre o vazamento e a rotação.
 - [ ] Decisão registrada: histórico foi reescrito ou risco foi formalmente aceito.
 - [ ] Se reescrito: equipe avisada e clones refeitos.
+- [ ] Se reescrito: arquivo de substituições apagado.
 - [ ] Se reescrito: chamado aberto no suporte do GitHub para caches de PR.
 - [ ] `.gitignore` atualizado para bloquear o formato que vazou.
 - [ ] Secret scanning e push protection habilitados no repositório.
