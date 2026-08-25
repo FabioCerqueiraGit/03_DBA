@@ -44,7 +44,7 @@ causas mais frequentes de incidente com origem "inexplicável" — ver
 Gravar no banco e chamar o parceiro são duas operações sem transação comum. Sem outbox, existem
 dois finais ruins e ninguém sabe qual aconteceu.
 
-**3. Todo consumidor precisa ser idempotênte.**
+**3. Todo consumidor precisa ser idempotente.**
 "Exactly-once" não existe. Entrega ao menos uma vez mais processamento idempotente produz o efeito
 que se deseja.
 
