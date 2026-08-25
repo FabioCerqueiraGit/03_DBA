@@ -1,8 +1,7 @@
 # APIs e integração de sistemas
 
-> Integração é onde os sistemas se encontram e onde os problemas se escondem. Esta área
-> trata do que fazer quando o outro lado falha, demora, responde errado — ou responde duas
-> vezes.
+> Integração é onde os sistemas se encontram e onde os problemas se escondem. Esta área trata do
+> que fazer quando o outro lado falha, demora, responde errado — ou responde duas vezes.
 
 ---
 
@@ -13,9 +12,15 @@
 | [`resiliencia/retry-seguro-e-idempotencia.md`](resiliencia/retry-seguro-e-idempotencia.md) | Repetir sem duplicar: chave de idempotência, classificação de falha, reconciliação |
 | [`soap-wcf/consumir-soap-de-sistema-legado.md`](soap-wcf/consumir-soap-de-sistema-legado.md) | SOAP e WCF do .NET Framework ao .NET 10, com os erros clássicos |
 | [`autenticacao/autenticacao-em-apis.md`](autenticacao/autenticacao-em-apis.md) | API Key, Basic, JWT, OAuth 2.0 client credentials, mTLS |
+| [`xml/processar-xml-com-seguranca.md`](xml/processar-xml-com-seguranca.md) | Escolha de API, namespaces, encoding, cultura, **XXE**, validação por XSD, streaming |
+| [`arquivos/integracao-por-arquivo-csv-e-posicional.md`](arquivos/integracao-por-arquivo-csv-e-posicional.md) | Arquivo incompleto, reprocessamento, CSV, layout posicional, `SqlBulkCopy`, SFTP |
 
 Para o cliente HTTP em si — criação, reuso, timeout, Polly — veja
 [`../dotnet/httpclient/`](../dotnet/httpclient/).
+
+Para a **atômicidade** entre gravar no banco e notificar o parceiro — outbox transacional,
+idempotência no consumidor, compensação e reconciliação — veja
+[`../arquitetura/integracao/`](../arquitetura/integracao/consistencia-entre-sistemas-outbox-e-reconciliacao.md).
 
 ---
 
@@ -27,8 +32,8 @@ Antes de escrever a primeira linha:
 Timeout definido, retry classificado, circuit breaker, e um caminho de degradação.
 
 **2. O que acontece se eu enviar duas vezes?**
-Se a resposta for "duplica o pedido", a integração não está pronta. Idempotência vem antes
-do retry, não depois.
+Se a resposta for "duplica o pedido", a integração não está pronta. Idempotência vem antes do
+retry, não depois.
 
 **3. Como eu descubro que ficou fora de sincronia?**
 Reconciliação periódica. Sem ela, quem descobre a divergência é o cliente.
@@ -53,7 +58,7 @@ O caso do meio é o que causa incidente de dado. Detalhes em
 
 ## Síncrono ou assíncrono
 
-| | Síncrono | Assíncrono (fila, webhook, polling) |
+| | Síncrono | Assíncrono (fila, webhook, polling, arquivo) |
 |---|---|---|
 | **Use quando** | O chamador precisa da resposta para continuar | O trabalho pode ser concluído depois |
 | **Falha do destino** | Derruba a operação inteira | A mensagem espera |
@@ -61,8 +66,19 @@ O caso do meio é o que causa incidente de dado. Detalhes em
 | **Complexidade** | Baixa | Alta — exige idempotência, ordem, *dead letter* |
 | **Rastreabilidade** | Imediata | Exige correlation ID disciplinado |
 
-A maioria das integrações de negócio (emitir nota, enviar pedido, notificar parceiro) não
-precisa ser síncrona — e sofre muito por ser.
+A maioria das integrações de negócio (emitir nota, enviar pedido, notificar parceiro) não precisa
+ser síncrona — e sofre muito por ser.
+
+---
+
+## Formato do payload
+
+| Formato | Onde aparece | Armadilha principal |
+|---|---|---|
+| JSON | APIs REST modernas | Cultura em número, fuso em data — ver [`../dotnet/json/`](../dotnet/json/) |
+| XML | SOAP, NF-e, sistemas legados, órgãos públicos | **XXE**, namespace, encoding declarado x real |
+| CSV | Bancos, ERPs, folha de pagamento | `Split(',')`, separador `;`, encoding, arquivo incompleto |
+| Posicional | Sistemas de grande porte e integrações antigas | Layout não versionado, campo que mudou de tamanho |
 
 ---
 
@@ -76,11 +92,15 @@ precisa ser síncrona — e sofre muito por ser.
 | Registro da execução da reconciliação, mesmo sem divergência | Distingue "tudo certo" de "o job parou" |
 | **Nada** de token, senha ou dado pessoal em log | Log é lido por muita gente e vive muito tempo |
 
+Detalhes em [`../dotnet/logging/`](../dotnet/logging/).
+
 ---
 
 ## Áreas relacionadas
 
 - [`../dotnet/httpclient/`](../dotnet/httpclient/) — o cliente HTTP em si
+- [`../arquitetura/integracao/`](../arquitetura/integracao/) — outbox, compensação, reconciliação
+- [`../seguranca/certificados/`](../seguranca/certificados/) — erro de TLS na integração
 - [`../sistemas-legados/`](../sistemas-legados/) — legado consumindo API moderna
 - [`../iis/`](../iis/) — quando a API que você expõe é quem falha
 
