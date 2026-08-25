@@ -93,7 +93,7 @@ if (resultado == PasswordVerificationResult.SuccessRehashNeeded)
 ```
 
 > **Aumentar `IterationCount` custa CPU no servidor.** 600.000 iterações multiplicam o custo por
-> seis em relação ao padrão. Em endpoint de login exposto, isso é também um vetor de negacao de
+> seis em relação ao padrão. Em endpoint de login exposto, isso é também um vetor de negação de
 > serviço — acompanhe de limitação de taxa por IP e por conta. Meça o tempo de resposta antes de
 > escolher o número.
 
