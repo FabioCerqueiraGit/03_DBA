@@ -5,8 +5,7 @@
 >
 > Navegação: **Tecnologia → Problema → Solução**
 
-Se você sabe o sintoma mas não a causa, use
-[`INDICE-POR-SINTOMA.md`](INDICE-POR-SINTOMA.md).
+Se você sabe o sintoma mas não a causa, use [`INDICE-POR-SINTOMA.md`](INDICE-POR-SINTOMA.md).
 
 ---
 
@@ -62,17 +61,12 @@ Se você sabe o sintoma mas não a causa, use
 | [`analisar-fragmentacao.sql`](sql-server/indexes/analisar-fragmentacao.sql) | Fragmentação com recomendação por índice |
 | [`manutencao-de-indices.md`](sql-server/indexes/manutencao-de-indices.md) | `REBUILD` x `REORGANIZE` e o erro silencioso das rotinas |
 
-### Espaço e crescimento
+### Espaço, crescimento e administração
 
 | Arquivo | Responde a |
 |---|---|
 | [`tamanho-das-tabelas.sql`](sql-server/espaco-e-crescimento/tamanho-das-tabelas.sql) | Quais tabelas ocupam mais espaço |
 | [`tamanho-dos-indices.sql`](sql-server/espaco-e-crescimento/tamanho-dos-indices.sql) | Quanto cada índice ocupa, e se é lido |
-
-### Administração
-
-| Arquivo | Responde a |
-|---|---|
 | [`backup-e-restore.md`](sql-server/administracao/backup-e-restore.md) | RPO/RTO, recovery model, roteiro de restore |
 | [`dbcc-checkdb-integridade.md`](sql-server/administracao/dbcc-checkdb-integridade.md) | Corrupção: detectar e o que fazer |
 | [`permissoes-e-menor-privilegio.md`](sql-server/administracao/permissoes-e-menor-privilegio.md) | Sair do `sa` sem derrubar o sistema |
@@ -80,7 +74,14 @@ Se você sabe o sintoma mas não a causa, use
 
 ---
 
-## C# e .NET
+## C# — fundamentos
+
+| Arquivo | Responde a |
+|---|---|
+| [`datas-e-fuso-horario.md`](csharp/datas-e-fuso-horario.md) | `DateTimeOffset` x `DateTime`, UTC, `TimeZoneInfo`, `DATETIME2`, intervalo meio aberto |
+| [`cultura-encoding-e-comparacao-de-strings.md`](csharp/cultura-encoding-e-comparacao-de-strings.md) | Cultura em números e datas, `StringComparison`, collation, encoding de arquivo |
+
+## .NET — runtime e infraestrutura
 
 | Arquivo | Responde a |
 |---|---|
@@ -90,7 +91,20 @@ Se você sabe o sintoma mas não a causa, use
 | [`armadilhas-async-await.md`](dotnet/async-await/armadilhas-async-await.md) | Deadlock, `async void`, `Task.Run`, `ConfigureAwait` |
 | [`tratamento-de-excecoes.md`](dotnet/excecoes/tratamento-de-excecoes.md) | O que capturar, `throw` x `throw ex`, log seguro |
 | [`serializacao-json.md`](dotnet/json/serializacao-json.md) | `System.Text.Json` x `Newtonsoft.Json`, fuso, cultura |
+| [`log-estruturado-e-o-que-nunca-logar.md`](dotnet/logging/log-estruturado-e-o-que-nunca-logar.md) | Message templates, níveis, `BeginScope`, o que nunca registrar |
+| [`correlation-id-e-rastreabilidade.md`](dotnet/logging/correlation-id-e-rastreabilidade.md) | Middleware, `DelegatingHandler`, W3C `traceparent`, `SESSION_CONTEXT` no SQL Server |
+| [`tempos-de-vida-e-dependencia-cativa.md`](dotnet/dependency-injection/tempos-de-vida-e-dependencia-cativa.md) | `Scoped` preso em `Singleton`, `IServiceScopeFactory`, DI em legado |
+| [`servico-em-segundo-plano-sem-derrubar-a-aplicacao.md`](dotnet/background-services/servico-em-segundo-plano-sem-derrubar-a-aplicacao.md) | `BackgroundService`, encerramento limpo, múltiplas instâncias |
 | [`aplicacao-lenta-ou-travando.md`](dotnet/diagnostico/aplicacao-lenta-ou-travando.md) | Thread pool starvation, CPU, memória, dumps |
+
+---
+
+## ASP.NET
+
+| Arquivo | Responde a |
+|---|---|
+| [`mapa-de-versoes-e-equivalencias.md`](aspnet/mapa-de-versoes-e-equivalencias.md) | Tradução WebForms / MVC 5 / Web API 2 → ASP.NET Core, e o que **não** tem equivalente |
+| [`ordem-do-pipeline-de-middleware.md`](aspnet/aspnet-core/ordem-do-pipeline-de-middleware.md) | `[Authorize]` que não protege, CORS, arquivo estático, `IHttpModule` |
 
 ---
 
@@ -114,22 +128,48 @@ Se você sabe o sintoma mas não a causa, use
 | Retry e idempotência | [`retry-seguro-e-idempotencia.md`](api-integracao/resiliencia/retry-seguro-e-idempotencia.md) |
 | SOAP e WCF | [`consumir-soap-de-sistema-legado.md`](api-integracao/soap-wcf/consumir-soap-de-sistema-legado.md) |
 | Autenticação | [`autenticacao-em-apis.md`](api-integracao/autenticacao/autenticacao-em-apis.md) |
+| XML, XSD e XXE | [`processar-xml-com-seguranca.md`](api-integracao/xml/processar-xml-com-seguranca.md) |
+| Arquivo, CSV, posicional, SFTP | [`integracao-por-arquivo-csv-e-posicional.md`](api-integracao/arquivos/integracao-por-arquivo-csv-e-posicional.md) |
 
 ---
 
-## IIS
+## Arquitetura
+
+| Arquivo | Responde a |
+|---|---|
+| [`quando-usar-cada-padrao.md`](arquitetura/quando-usar-cada-padrao.md) | Repository, Unit of Work, CQRS, Mediator, SOLID, Clean Architecture — com o preço de cada um |
+| [`consistencia-entre-sistemas-outbox-e-reconciliacao.md`](arquitetura/integracao/consistencia-entre-sistemas-outbox-e-reconciliacao.md) | Escrita dupla, outbox transacional, idempotência, compensação, reconciliação |
+
+---
+
+## Segurança
+
+| Arquivo | Responde a |
+|---|---|
+| [`prevenir-e-encontrar-sql-injection.md`](seguranca/sql-injection/prevenir-e-encontrar-sql-injection.md) | Parametrização, `sp_executesql`, `QUOTENAME`, e **script de auditoria** do banco |
+| [`gerenciamento-de-segredos-em-aplicacoes-dotnet.md`](seguranca/secrets/gerenciamento-de-segredos-em-aplicacoes-dotnet.md) | User Secrets, Key Vault, identidade gerenciada, `configSource`, `aspnet_regiis` |
+| [`tls-e-certificados-em-dotnet.md`](seguranca/certificados/tls-e-certificados-em-dotnet.md) | Diagnosticar TLS sem desligar a validação, cadeia incompleta, mutual TLS |
+| [`armazenamento-seguro-de-senhas.md`](seguranca/senhas/armazenamento-seguro-de-senhas.md) | PBKDF2, Argon2id, migração oportunista de MD5 |
+
+---
+
+## DevOps
+
+| Arquivo | Responde a |
+|---|---|
+| [`comandos-git-de-emergencia.md`](devops/git/comandos-git-de-emergencia.md) | `reflog`, `revert`, `bisect`, `--force-with-lease`, `fsck` |
+| [`remover-segredo-vazado-do-historico.md`](devops/git/remover-segredo-vazado-do-historico.md) | Rotação, `git-filter-repo`, push protection, prevenção |
+| [`pipeline-ci-dotnet.md`](devops/github-actions/pipeline-ci-dotnet.md) | Build e teste, cache NuGet, segredos, runner Windows para .NET Framework |
+| [`estrategias-de-deployment-e-rollback.md`](devops/deployment/estrategias-de-deployment-e-rollback.md) | Expand/contract, blue-green, canário, migração de banco, critérios de rollback |
+
+---
+
+## IIS e sistemas legados
 
 | Arquivo | Responde a |
 |---|---|
 | [`http-503-service-unavailable.md`](iis/troubleshooting/http-503-service-unavailable.md) | Application Pool parado, Rapid-Fail, fila cheia |
 | [`http-500-e-http-502.md`](iis/troubleshooting/http-500-e-http-502.md) | Subcódigos, `web.config`, aplicação que não sobe |
-
----
-
-## Sistemas legados
-
-| Arquivo | Responde a |
-|---|---|
 | [`modernizacao-incremental-strangler.md`](sistemas-legados/modernizacao-incremental-strangler.md) | Strangler Fig, ACL, DI, logging, testes, migração de plataforma |
 | [`legado-consumindo-api-rest-moderna.md`](sistemas-legados/legado-consumindo-api-rest-moderna.md) | TLS 1.2, `HttpClient`, deadlock, JSON, token |
 
@@ -152,10 +192,13 @@ Se você sabe o sintoma mas não a causa, use
 | Recurso usado neste repositório | Versão mínima |
 |---|---|
 | Piso geral dos scripts | **2012 (11.x)** |
+| `sp_executesql`, `QUOTENAME`, `OUTPUT`, `READPAST` | 2005 (9.x) |
 | `open_transaction_count` em `sys.dm_exec_sessions` | 2012 (11.x) |
 | `sys.dm_db_stats_properties` | 2012 SP1 (e 2008 R2 SP2) |
 | Query Store | 2016 (13.x) |
 | Colunas de *memory grant* em `sys.dm_exec_query_stats` | 2016 (13.x) |
+| `sp_set_session_context` / `SESSION_CONTEXT()` | 2016 (13.x) |
+| `BULK INSERT` com `CODEPAGE = '65001'` (UTF-8) | 2016 (13.x) |
 | Limiar dinâmico de estatísticas por padrão | 2016 (13.x), compat. 130+ |
 | Scalar UDF Inlining | 2019 (15.x) |
 | Parameter Sensitive Plan optimization | 2022 (16.x) |
@@ -166,14 +209,34 @@ Se você sabe o sintoma mas não a causa, use
 |---|---|
 | `SocketsHttpHandler` / `PooledConnectionLifetime` | .NET Core 2.1+ |
 | `IHttpClientFactory` | .NET Core 2.1+ e .NET Framework via `Microsoft.Extensions.Http` |
+| `CryptographicOperations.FixedTimeEquals` | .NET Core 2.1+ e .NET Framework 4.7.2+ |
+| `CodePagesEncodingProvider` | Necessário no .NET Core/5+; disponível por padrão no .NET Framework |
 | `System.Text.Json` | .NET Core 3.0+ (pacote em .NET Framework) |
+| `BackgroundService` / `Microsoft.Extensions.Hosting` | .NET Core 3.1+ |
 | Ferramentas `dotnet-counters` / `dotnet-dump` | .NET Core 3.0+ |
+| `DateOnly` / `TimeOnly` e IANA IDs no Windows | .NET 6+ |
+| `PeriodicTimer` | .NET 6+ |
+| `Stopwatch.GetElapsedTime` | .NET 7+ |
+| `TimeProvider` | .NET 8+ |
 | `AsSplitQuery` (EF Core) | EF Core 5 |
 | `ExecuteUpdate` / `ExecuteDelete` (EF Core) | EF Core 7 |
+| `FromSql` com interpolação (EF Core) | EF Core 8 |
 | Polly v8 (`ResiliencePipelineBuilder`) | .NET moderno — use Polly v7 em .NET Framework |
 | `Microsoft.Extensions.Http.Resilience` | .NET 8+ |
+| `Encrypt=True` por padrão | `Microsoft.Data.SqlClient` 4.0+ |
+| `Authentication=Active Directory Default` | `Microsoft.Data.SqlClient` 3.0+ |
+| Entra ID em pacote separado (`Extensions.Azure`) | `Microsoft.Data.SqlClient` 7.0+ |
+| ASP.NET Core sobre .NET Framework | Somente até ASP.NET Core 2.x |
 | Cliente WCF | .NET Framework completo; .NET moderno via `System.ServiceModel.*` |
 | **Servidor** WCF | .NET Framework; no .NET moderno, CoreWCF |
+
+### Versões do .NET em suporte
+
+| Versão | Tipo | Fim do suporte |
+|---|---|---|
+| .NET 10 | LTS | 14/11/2028 |
+| .NET 9 | STS | 10/11/2026 |
+| .NET 8 | LTS | 10/11/2026 |
 
 ---
 
